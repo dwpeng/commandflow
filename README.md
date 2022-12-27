@@ -1,4 +1,4 @@
-# bioflow
+# commandflow
 
 ## 背景
 在分析数据的时候，经常需要编写shell脚本，虽然很多时候写起来并不麻烦，但是总有遇到忘记某个参数是什么意思的时候。所以就有了通过Python去生成一串命令的想法。
@@ -17,7 +17,7 @@ pip install poetry
 
 #### 使用pip安装
 ```py
-pip install bioflow
+pip install commandflow
 ```
 
 #### 使用poetry打包安装
@@ -26,13 +26,13 @@ pip install bioflow
 
 ```bash
 poetry build
-pip install .\dist\bioflow-0.1.0-py3-none-any.whl --force-reinstall
+pip install .\dist\commandflow-0.1.0-py3-none-any.whl --force-reinstall
 ```
 
 
 ### 首先继承继承Command类
 ```py
-from bioflow import Command
+from commandflow import Command
 class Fastp(Command):
     # 设置可执行程序的名字
     # 这里也可以直接写成一个可执行程序的路径
@@ -76,7 +76,7 @@ def set_action(
 可以添加自定义方法来组合参数
 
 ```py
-from bioflow import Command
+from commandflow import Command
 class Fastp(Command):
     # 设置可执行程序的名字
     # 这里也可以直接写成一个可执行程序的路径
@@ -121,7 +121,7 @@ print(fastp.command)
 
 ## 具体的例子
 
-这里使用bioflow编写fastp程序对应的参数（写了一部分）
+这里使用commandflow编写fastp程序对应的参数（写了一部分）
 ```txt
 
 r"""
@@ -251,7 +251,7 @@ options:
 
 ```py
 from typing import Literal
-from bioflow import Command
+from commandflow import Command
 
 class Fastp(Command):
     exe = 'fastp'

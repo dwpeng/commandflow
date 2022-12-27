@@ -1,5 +1,5 @@
 from typing import Literal
-from bioflow import Command
+from commandflow import Command
 
 r"""
 usage: fastp -i <in1> -o <out1> [-I <in1> -O <out2>] [options...]

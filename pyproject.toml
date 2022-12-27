@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "bioflow"
+name = "commandflow"
 version = "0.1.0"
 description = ""
 authors = ["dwpeng <1732889554@qq.com>"]
