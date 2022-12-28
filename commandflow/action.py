@@ -12,7 +12,9 @@ class ActionBase(ABC):
         value: Union[List[str], str, None] = None,
         positional: bool = False,
         help: Union[str, None] = None,
-        stdout: Union[str, None] = None
+        stdout: Union[str, None] = None,
+        sep: str = ' ',
+        command = None
     ):
         """ 
             Paramters:
@@ -34,6 +36,8 @@ class ActionBase(ABC):
         self.positional = positional
         self.help = help
         self.stdout = stdout
+        self.sep = sep
+        self.command = command
 
     @abstractproperty
     def value_str(self) -> str:
@@ -48,15 +52,10 @@ class ActionBase(ABC):
         if self.positional:
             return self.value_str
 
-        return '%s %s' % (
+        return '%s%s' % (
             args_name,
-            self.value_str
+            ' ' + self.value_str if self.value_str else ''
         )
-
-    def diff(self, value):
-        d = self.to_dict()
-        action = ActionBase.from_dict(d)
-        action.value = value
 
     def __eq__(self, o) -> bool:
         if not isinstance(o, ActionBase):
@@ -110,7 +109,9 @@ class ListAction(ActionBase):
 
     @property
     def value_str(self) -> str:
-        return self.sep.join(self.value)
+        return self.sep.join([
+            str(i) for i in self.value
+        ])
 
 
 class STDOUTAction(ActionBase):

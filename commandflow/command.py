@@ -12,12 +12,17 @@ class CommandBase(ABC):
 
     def __init__(self):
         self.exe = self.exe
+        self.subcommand: Union[str, None] = None
         self.keyword_args: List[ActionBase] = []
         self.postional_arg: List[ActionBase] = []
         self.stdout_arg: Union[ActionBase, None] = None
+        self._records: List[str] = []
 
     def set_exe(self, exe):
         self.exe = exe
+
+    def set_subcommand(self, subcommand):
+        self.subcommand = subcommand
 
     def set_action(
         self,
@@ -89,8 +94,12 @@ class CommandBase(ABC):
 
     @property
     def command(self) -> str:
+        if self.subcommand is not None:
+            exe = '%s %s' % (self.exe, self.subcommand)
+        else:
+            exe = self.exe
         return '%s %s' % (
-            self.exe,
+            exe,
             self._create_args()
         )
 
@@ -103,6 +112,13 @@ class CommandBase(ABC):
         self.keyword_args = []
         self.postional_arg = []
         self.stdout_arg = None
+
+    def record(self):
+        self._records.append(self.command)
+
+    @property
+    def records(self) -> List[str]:
+        return [i for i in self._records]
 
 
 class Command(CommandBase):
