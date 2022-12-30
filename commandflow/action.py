@@ -28,6 +28,11 @@ class ActionBase(ABC):
 
                 help: the description text
         """
+        if positional:
+            short_arg_name = None
+            long_arg_name = None
+            stdout = False
+            
         if stdout is None and short_arg_name is None and long_arg_name is None:
             raise ValueError('short or long arg name is required!')
         self.short_arg_name = short_arg_name
@@ -39,15 +44,27 @@ class ActionBase(ABC):
         self.sep = sep
         self.command = command
 
+    @property
+    def long_dash(self):
+        if hasattr(self.command, 'long_dash'):
+            return self.command.long_dash
+        return '--'
+
+    @property
+    def short_dash(self):
+        if hasattr(self.command, 'short_dash'):
+            return self.command.short_dash
+        return '-'
+
     @abstractproperty
     def value_str(self) -> str:
         raise NotImplementedError
 
     def __str__(self) -> str:
         if self.long_arg_name is not None:
-            args_name = '--%s' % self.long_arg_name
+            args_name = '%s%s' % (self.long_dash, self.long_arg_name)
         else:
-            args_name = '-%s' % self.short_arg_name
+            args_name = '%s%s' % (self.short_dash, self.short_arg_name)
 
         if self.positional:
             return self.value_str
@@ -95,14 +112,16 @@ class ListAction(ActionBase):
         value: Union[List[str], str, None] = None,
         positional: bool = False,
         help: Union[str, None] = None,
-        sep: str = ' '
+        sep: str = ' ',
+        command = None
     ):
         super().__init__(
             short_arg_name,
             long_arg_name,
             value=value,
             positional=positional,
-            help=help
+            help=help,
+            command=command
         )
         assert type(sep) is str, 'sep should be a str type value'
         self.sep = sep

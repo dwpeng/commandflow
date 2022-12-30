@@ -1,12 +1,16 @@
+# https://python-poetry.org/docs/pyproject/
+
 [tool.poetry]
 name = "commandflow"
-version = "0.1.0"
-description = ""
+version = "0.1.1"
+description = "Writing shell by python."
 authors = ["dwpeng <1732889554@qq.com>"]
 readme = "README.md"
+homepage = "https://github.com/dwpeng/commandflow"
+repository = "https://github.com/dwpeng/commandflow"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.7"
 
 
 [build-system]

@@ -1,5 +1,4 @@
 from abc import ABC
-from copy import deepcopy
 from functools import partial
 from typing import List, Union
 
@@ -8,11 +7,12 @@ from .action import ActionBase, BoolAction, ListAction, STDOUTAction, StrAction
 
 class CommandBase(ABC):
     """ 命令 """
+    long_dash = '--'
+    short_dash = '-'
     exe = None
 
     def __init__(self):
         self.exe = self.exe
-        self.subcommand: Union[str, None] = None
         self.keyword_args: List[ActionBase] = []
         self.postional_arg: List[ActionBase] = []
         self.stdout_arg: Union[ActionBase, None] = None
@@ -20,9 +20,6 @@ class CommandBase(ABC):
 
     def set_exe(self, exe):
         self.exe = exe
-
-    def set_subcommand(self, subcommand):
-        self.subcommand = subcommand
 
     def set_action(
         self,
@@ -32,12 +29,13 @@ class CommandBase(ABC):
         help: Union[str, None] = None,
         positional: bool = False,
         sep: str = ' ',
-        stdout: Union[str, None] = None
+        stdout: Union[str, None] = None,
     ):
+        command = self
         if stdout is not None:
             if type(stdout) is not str:
                 raise TypeError('stdout should be a output name')
-            self.stdout_arg = STDOUTAction(stdout=stdout)
+            self.stdout_arg = STDOUTAction(stdout=stdout, command=command)
             return self
 
         if type(value) is list:
@@ -51,6 +49,8 @@ class CommandBase(ABC):
             action = StrAction
         else:
             raise TypeError('list/str/bool type is required.')
+
+        action = partial(action, command=command)
 
         action = action(
             short_arg_name=short_arg_name,
@@ -86,27 +86,24 @@ class CommandBase(ABC):
 
     def _create_args(self) -> str:
         """ 生成参数 """
-        return '%s %s %s' % (
+        args = '%s %s' % (
             ' '.join([str(i) for i in self.keyword_args]),
             ' '.join([str(i) for i in self.postional_arg]),
-            self.stdout_arg if self.stdout_arg is not None else ''
+        )
+        return '%s %s' % (
+            args.strip(),
+            str(self.stdout_arg) if self.stdout_arg is not None else ''
         )
 
     @property
     def command(self) -> str:
-        if self.subcommand is not None:
-            exe = '%s %s' % (self.exe, self.subcommand)
-        else:
-            exe = self.exe
-        return '%s %s' % (
-            exe,
+        return ('%s %s' % (
+            self.exe,
             self._create_args()
-        )
+        )).strip()
 
     def __str__(self) -> str:
-        return '%s' % (
-            self.command
-        )
+        return self.command
 
     def clear(self):
         self.keyword_args = []
@@ -124,6 +121,6 @@ class CommandBase(ABC):
 class Command(CommandBase):
     pass
 
-    def stdout(self, output=None):
+    def stdout(self, output: Union[str, None]=None):
         if output is not None:
             self.set_action(stdout=output)
