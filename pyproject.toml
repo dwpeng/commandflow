@@ -2,7 +2,7 @@
 
 [tool.poetry]
 name = "commandflow"
-version = "0.1.1"
+version = "0.1.2"
 description = "Writing shell by python."
 authors = ["dwpeng <1732889554@qq.com>"]
 readme = "README.md"

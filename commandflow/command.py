@@ -109,6 +109,7 @@ class CommandBase(ABC):
         self.keyword_args = []
         self.postional_arg = []
         self.stdout_arg = None
+        self._records = []
 
     def record(self):
         self._records.append(self.command)
@@ -119,7 +120,6 @@ class CommandBase(ABC):
 
 
 class Command(CommandBase):
-    pass
 
     def stdout(self, output: Union[str, None]=None):
         if output is not None:
