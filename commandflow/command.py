@@ -50,6 +50,7 @@ class CommandBase(ABC):
         else:
             raise TypeError('list/str/bool type is required.')
 
+        # 自动传入当前command
         action = partial(action, command=command)
 
         action = action(
@@ -60,6 +61,9 @@ class CommandBase(ABC):
             positional=positional,
         )
 
+        # 检查是否存在重复的参数名
+        # 存在的话，更新值
+        # 否则，添加该参数
         check_args = [
             self.keyword_args,
             self.postional_arg,
@@ -122,5 +126,6 @@ class CommandBase(ABC):
 class Command(CommandBase):
 
     def stdout(self, output: Union[str, None]=None):
+        """ 自带一个标准输出的参数 """
         if output is not None:
             self.set_action(stdout=output)
