@@ -74,3 +74,19 @@ class TestCommand(TestCase):
             c.command,
             'help @@apple 100 @b 100'
         )
+
+    def test_clear(self):
+        c = MyTestCommand()
+        c.input(100)
+        c.clear()
+        self.assertEqual('help', c.command)
+
+    def test_record(self):
+        c = MyTestCommand()
+        for i in range(10):
+            c.input(i)
+            c.record()
+        self.assertSequenceEqual(
+            c.records,
+            ['help --apple %d' % i for i in range(10)]
+        )
