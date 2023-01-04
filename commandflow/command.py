@@ -120,6 +120,8 @@ class CommandBase(ABC):
 
     @property
     def records(self) -> List[str]:
+        if not self._records:
+            return [self.command]
         return [i for i in self._records]
 
 
