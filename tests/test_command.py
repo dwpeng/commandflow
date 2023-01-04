@@ -90,3 +90,12 @@ class TestCommand(TestCase):
             c.records,
             ['help --apple %d' % i for i in range(10)]
         )
+
+    def test_nuhup(self):
+        c = MyTestCommand()
+        c.nohup(True, False)
+        c.input('aaa')
+        self.assertEqual(
+            c.command,
+            'nohup help --apple aaa >/dev/null 2>&1'
+        )

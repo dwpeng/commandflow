@@ -17,9 +17,15 @@ class CommandBase(ABC):
         self.postional_arg: List[ActionBase] = []
         self.stdout_arg: Union[ActionBase, None] = None
         self._records: List[str] = []
+        self._nohup: bool = False
+        self._nohup_log = True
 
     def set_exe(self, exe):
         self.exe = exe
+
+    def nohup(self, nohup: bool, enable_log: bool = True):
+        self._nohup = nohup
+        self._nohup_log = enable_log
 
     def set_action(
         self,
@@ -101,10 +107,15 @@ class CommandBase(ABC):
 
     @property
     def command(self) -> str:
-        return ('%s %s' % (
+        c = ('%s %s' % (
             self.exe,
             self._create_args()
         )).strip()
+        if self._nohup:
+            c = 'nohup ' + c
+            if not self._nohup_log:
+                c = c + ' >/dev/null 2>&1'
+        return c
 
     def __str__(self) -> str:
         return self.command
@@ -123,7 +134,6 @@ class CommandBase(ABC):
         if not self._records:
             return [self.command]
         return [i for i in self._records]
-
 
 class Command(CommandBase):
 

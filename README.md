@@ -50,7 +50,7 @@ c = MyCommand()
 c.set_exe('bwa')
 ```
 ### 添加参数
-是有`set_action()`来添加参数到最终的命令行中
+使用`set_action()`来添加参数到最终的命令行中
 ```py
 from commandflow import Command
 class MyCommand(Command):
@@ -108,7 +108,7 @@ print(c.command)  # bwa --file apple.docx
 ### 生成多个命令行
 上面的方式只能生成一条命令，但实际应用中可能会涉及到需要生成多条命令，彼此之间只是参数值不同
 
-是有`record()`记录需要生成的命令，并通过`records`来获取所有记录的命令
+使用`record()`记录需要生成的命令，并通过`records`来获取所有记录的命令
 ```py
 c = MyCommand()
 for file in ['1.docx', '2.docx', '3.docx']:
@@ -136,4 +136,10 @@ class MyCommand(Command):
     exe = 'bwa'
 ```
 
-
+### 后台任务
+```py
+c.nohup(nohup=True, nohup_log=False)
+c.input('apple.docx')
+print(c.command)
+# nohup bwa --file apple.docx >/dev/null 2>&1
+```
